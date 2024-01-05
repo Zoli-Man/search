@@ -72,6 +72,12 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+class Node:
+    def __init__(self, state, path,cost=0):
+        self.state = state
+        self.path = path
+        self.cost = cost
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,17 +93,64 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    forniter = util.Stack()
+    forniter.push(Node(problem.getStartState(),[]))
+    visited = set()
+    while forniter.isEmpty() == False:
+        node = forniter.pop()
+        if problem.isGoalState(node.state):
+            return node.path
+        if node.state not in visited:
+            visited.add(node.state)
+            for child_state , action , cost in problem.getSuccessors(node.state):
+                child_node = Node(child_state,node.path + [action])
+                forniter.push(child_node)
+
+
+
+
+
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    root = Node(problem.getStartState(),[])
+    # the que
+    frontier = util.Queue()
+    frontier.push(root)
+    reached = []
+    reached.append(root.state)
+
+    while frontier.isEmpty() == False:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.path
+        for child_state , action , cost in problem.getSuccessors(node.state):
+            if child_state not in reached:
+                reached.append(child_state)
+                child_node = Node(child_state,node.path + [action])
+                frontier.push(child_node)
+
+    return False
+
+    #util.raiseNotDefined()
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    frontier.push(Node(problem.getStartState(),[]),0)
+    visited = set()
+    while frontier.isEmpty() == False:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.path
+        if node.state not in visited:
+            visited.add(node.state)
+            for child_state , action , cost in problem.getSuccessors(node.state):
+                child_node = Node(child_state,node.path + [action],node.cost + cost)
+                frontier.push(child_node,child_node.cost)
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,8 +162,19 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    frontier = util.PriorityQueue()
+    root = problem.getStartState()
+    frontier.push(Node(problem.getStartState(), [], 0), 0)
+    visited = []
+    while frontier.isEmpty() == False:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.path
+        if node.state not in visited:
+            visited.append(node.state)
+            for child_state, action, cost in problem.getSuccessors(node.state):
+                child_node = Node(child_state, node.path + [action], node.cost + cost )
+                frontier.push(child_node, child_node.cost + heuristic(child_state,problem))
 
 # Abbreviations
 bfs = breadthFirstSearch
