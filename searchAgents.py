@@ -289,8 +289,8 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.passedCorners = {corner: False for corner in self.corners}
-        self.curentPosition = self.startingPosition
-        print(self.startingPosition)
+        #self.curentPosition = self.startingPosition
+        #print(self.startingPosition)
 
     def getStartState(self):
         """
